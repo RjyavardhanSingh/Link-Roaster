@@ -3,6 +3,27 @@ import { scrapeUrl, ScrapeError } from '../config/scraper';
 import { generateAIResponse } from '../config/openRouterConfig';
 import { createRoast, getAllRoasts } from '../models/roast';
 
+const BLOCKED_DOMAINS = [
+  'pornhub.com',
+  'www.pornhub.com',
+  'xvideos.com',
+  'www.xvideos.com',
+  'xnxx.com',
+  'www.xnxx.com',
+  'xhamster.com',
+  'www.xhamster.com',
+  'redtube.com',
+  'www.redtube.com',
+  'youporn.com',
+  'www.youporn.com',
+  'stripchat.com',
+  'www.stripchat.com',
+  'chaturbate.com',
+  'www.chaturbate.com',
+  'onlyfans.com',
+  'www.onlyfans.com',
+];
+
 export async function roastUrl(req: Request, res: Response): Promise<void> {
   try {
     const { url, ipHash } = req.body;
@@ -26,6 +47,19 @@ export async function roastUrl(req: Request, res: Response): Promise<void> {
     }
 
     const domain = parsedUrl.hostname;
+
+    if (BLOCKED_DOMAINS.includes(domain)) {
+      const saved = await createRoast({
+        url, domain, ipHash,
+        scrapeFailed: false,
+        title: null,
+        summary: '', interesting: '', questionable: '', verdict: '',
+        isBlock: true,
+        blockedReason: 'This domain is not allowed.',
+      });
+      res.status(201).json(saved);
+      return;
+    }
 
     let scrapedText: string;
     let scrapeFailed = false;
