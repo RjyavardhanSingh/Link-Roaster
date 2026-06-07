@@ -1,0 +1,79 @@
+.card {
+  max-width: 640px;
+  margin: 48px auto 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.domain {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.body {
+  padding: 20px 24px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.text {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.verdict {
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.blocked {
+  padding: 20px 24px;
+}
+
+.blockedText {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.error {
+  max-width: 640px;
+  margin: 24px auto 0;
+  padding: 14px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
