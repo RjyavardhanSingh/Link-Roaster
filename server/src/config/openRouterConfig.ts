@@ -18,7 +18,7 @@ export async function generateAIResponse(url: string, scrapedText: string): Prom
   const completion = await client.chat.send({
     chatRequest: {
     model: 'mistralai/mistral-nemo',
-    maxTokens: 256,
+    maxTokens: 1500,
     messages: [
       {
         role: 'user',
