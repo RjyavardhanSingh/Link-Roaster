@@ -1,3 +1,5 @@
+const BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 export interface RoastResponse {
   id: string;
   url: string;
@@ -17,7 +19,7 @@ export interface RoastResponse {
 export async function submitRoast(url: string): Promise<RoastResponse> {
   const ipHash = await generateIpHash();
 
-  const res = await fetch('/api/roast', {
+  const res = await fetch(`${BASE}/api/roast`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url, ipHash }),
@@ -32,7 +34,7 @@ export async function submitRoast(url: string): Promise<RoastResponse> {
 }
 
 export async function fetchRoasts(): Promise<RoastResponse[]> {
-  const res = await fetch('/api/roasts');
+  const res = await fetch(`${BASE}/api/roasts`);
   if (!res.ok) {
     throw new Error('Failed to fetch roasts');
   }
