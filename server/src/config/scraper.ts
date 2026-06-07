@@ -43,16 +43,46 @@ export async function scrapeUrl(url: string): Promise<string> {
   const html = await response.text();
   const $ = cheerio.load(html);
 
-  $('script, style, nav, footer, header, aside, iframe, noscript, svg, [role="navigation"]').remove();
+  const extracted = tryExtractJsonLd($) || tryExtractArticle($) || tryExtractBody($);
 
-  const text = $('body')
-    .text()
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  if (!text || text.length < 50) {
+  if (!extracted || extracted.length < 50) {
+    const meta = $('meta[name="description"]').attr('content') || $('meta[property="og:description"]').attr('content') || '';
+    if (meta.length >= 50) return meta.slice(0, 3000);
+    const title = $('title').text() || $('meta[property="og:title"]').attr('content') || '';
+    if (title) return `[Scraped URL] ${title}`;
     throw new ScrapeError('Page appears to be behind a paywall or has no readable content');
   }
 
-  return text.slice(0, 8000);
+  return extracted.slice(0, 8000);
+}
+
+function tryExtractJsonLd($: cheerio.CheerioAPI): string | null {
+  const blocks: string[] = [];
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse($(el).text());
+      const items = Array.isArray(data) ? data : [data];
+      for (const item of items) {
+        if (item.articleBody) blocks.push(item.articleBody);
+        if (item.description) blocks.push(item.description);
+        if (item.text) blocks.push(item.text);
+      }
+    } catch {}
+  });
+  return blocks.length > 0 ? blocks.join('\n\n') : null;
+}
+
+function tryExtractArticle($: cheerio.CheerioAPI): string | null {
+  const article = $('article').first();
+  if (!article.length) return null;
+  article.find('script, style, nav, footer, header, aside, iframe, noscript, svg').remove();
+  const text = article.text().replace(/\s+/g, ' ').trim();
+  return text.length >= 50 ? text : null;
+}
+
+function tryExtractBody($: cheerio.CheerioAPI): string | null {
+  const clone = $('body').clone();
+  clone.find('script, style, nav, footer, header, aside, iframe, noscript, svg, [role="navigation"]').remove();
+  const text = clone.text().replace(/\s+/g, ' ').trim();
+  return text.length >= 50 ? text : null;
 }

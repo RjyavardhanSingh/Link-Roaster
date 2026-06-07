@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { roastUrl } from '../controller/roastController';
+import { listRoasts, roastUrl } from '../controller/roastController';
+import { roastLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
-router.post('/roast', roastUrl);
+router.get('/roasts', listRoasts);
+router.post('/roast', roastLimiter, roastUrl);
 
 export default router;

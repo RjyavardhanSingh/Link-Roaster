@@ -17,8 +17,8 @@ const client = new OpenRouter({
 export async function generateAIResponse(url: string, scrapedText: string): Promise<RoastAIResponse> {
   const completion = await client.chat.send({
     chatRequest: {
-    model: '~openai/gpt-latest',
-    maxTokens: 600,
+    model: 'mistralai/mistral-nemo',
+    maxTokens: 256,
     messages: [
       {
         role: 'user',

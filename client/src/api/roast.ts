@@ -31,6 +31,14 @@ export async function submitRoast(url: string): Promise<RoastResponse> {
   return res.json();
 }
 
+export async function fetchRoasts(): Promise<RoastResponse[]> {
+  const res = await fetch('/api/roasts');
+  if (!res.ok) {
+    throw new Error('Failed to fetch roasts');
+  }
+  return res.json();
+}
+
 async function generateIpHash(): Promise<string> {
   const array = new Uint8Array(16);
   crypto.getRandomValues(array);

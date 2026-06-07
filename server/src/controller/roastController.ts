@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { scrapeUrl, ScrapeError } from '../config/scraper';
 import { generateAIResponse } from '../config/openRouterConfig';
-import { createRoast } from '../models/roast';
+import { createRoast, getAllRoasts } from '../models/roast';
 
 export async function roastUrl(req: Request, res: Response): Promise<void> {
   try {
@@ -61,5 +61,15 @@ export async function roastUrl(req: Request, res: Response): Promise<void> {
   } catch (err: any) {
     console.error('Roast pipeline error:', err);
     res.status(500).json({ error: err.message || 'Internal server error' });
+  }
+}
+
+export async function listRoasts(_req: Request, res: Response): Promise<void> {
+  try {
+    const roasts = await getAllRoasts();
+    res.json(roasts);
+  } catch (err: any) {
+    console.error('Failed to fetch roasts:', err);
+    res.status(500).json({ error: 'Failed to fetch roasts' });
   }
 }
